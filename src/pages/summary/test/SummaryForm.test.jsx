@@ -1,4 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import {
+  render,
+  screen,
+  waitForElementToBeRemoved,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import SummaryForm from "../SummaryForm";
 
@@ -41,8 +45,31 @@ test("Checking checkbox enables button on first click and disable on second clic
   expect(button).toBeDisabled();
 });
 
-test("popover responds to hover", () => {
+//async update going on
+test("popover responds to hover", async () => {
+  render(<SummaryForm />);
+
   //popover starts out hidden
+  const nullPopover = screen.queryByText(
+    /no ice cream will actually be delivered/i
+  ); //case sensetive
+  expect(nullPopover).not.toBeInTheDocument();
+
   //popover appears upon mouseover of checkbox label
+  const termsAndConditions = screen.getByText(/terms and conditions/i);
+  userEvent.hover(termsAndConditions);
+
+  const popover = screen.getByText(/no ice cream will actually be delivered/i);
+  expect(popover).toBeInTheDocument(); //makes code readable
+
   //popover disappears when we mouse out
+  userEvent.unhover(termsAndConditions);
+  //error React state updates should be wrapped into act(...):
+  // const nullPopoverAgain = screen.queryByText(
+  //   /no ice cream will actually be delivered/i
+  // );
+  // expect(nullPopoverAgain).not.toBeInTheDocument();
+  await waitForElementToBeRemoved(
+    screen.queryByText(/no ice cream will actually be delivered/i)
+  );
 });
