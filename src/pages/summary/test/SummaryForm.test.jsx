@@ -64,7 +64,8 @@ test("popover responds to hover", async () => {
 
   //popover disappears when we mouse out
   userEvent.unhover(termsAndConditions);
-  //error React state updates should be wrapped into act(...):
+
+  //Resolve error React state updates should be wrapped into act(...): - add async and await
   // const nullPopoverAgain = screen.queryByText(
   //   /no ice cream will actually be delivered/i
   // );
