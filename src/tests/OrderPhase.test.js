@@ -70,7 +70,7 @@ test("Order phases for happy path", async () => {
   // this one is async because there is a POST request to server in between summary
   //    and confirmation pages
 
-  const thankYouHeader = await screen.findByRole("heading", {
+  const thankYouHeader = await screen.findByRole({
     name: /thank you/i,
   });
   expect(thankYouHeader).toBeInTheDocument();
@@ -96,4 +96,29 @@ test("Order phases for happy path", async () => {
   // happening after test is over
   await screen.findByRole("spinbutton", { name: "Vanilla" });
   await screen.findByRole("checkbox", { name: "Cherries" });
+});
+
+test("Don’t display toppings heading on summary page if no toppings are ordered", async () => {
+  render(<App />);
+
+  const vanillaInput = await screen.findByRole("spinbutton", {
+    name: "Vanilla",
+  });
+  userEvent.clear(vanillaInput);
+  userEvent.type(vanillaInput, "1");
+
+  const orderSummaryButton = screen.getByRole("button", {
+    name: /order sundae/i,
+  });
+  userEvent.click(orderSummaryButton);
+
+  const summaryHeading = screen.getByRole("heading", { name: "Order Summary" });
+  expect(summaryHeading).toBeInTheDocument();
+
+  const scoopsHeading = screen.getByRole("heading", { name: "Scoops: $2.00" });
+  expect(scoopsHeading).toBeInTheDocument();
+
+  //use query if something is not in the page
+  const toppingsHeading = screen.queryByText(/toppings/i);
+  expect(toppingsHeading).not.toBeInTheDocument();
 });
