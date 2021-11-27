@@ -9,8 +9,6 @@ export default function Confirmation({ setOrderPhase }) {
   const [orderNumber, setOrderNumber] = useState(null);
   const [error, setError] = useState(false);
 
-  console.log({ orderNumber });
-
   useEffect(() => {
     axios
       // in a real app we would get order details from context
@@ -23,7 +21,7 @@ export default function Confirmation({ setOrderPhase }) {
   }, []);
 
   if (error) {
-    return <AlertBanner />;
+    return <AlertBanner message={null} variant={null} />;
   }
 
   function handleClick() {
